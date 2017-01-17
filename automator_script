@@ -1,0 +1,20 @@
+on run {input, parameters}
+	set p to POSIX path of (path to me)
+	set the csvPath to "/Volumes/" & replaceText((input as string), ":", "/")
+	do shell script "java -jar " & p & "/Contents/Java/jason-bom.jar \"" & csvPath & "\""
+	
+end run
+to replaceText(someText, oldItem, newItem)
+	set {tempTID, AppleScript's text item delimiters} to {AppleScript's text item delimiters, oldItem}
+	try
+		set {itemList, AppleScript's text item delimiters} to {text items of someText, newItem}
+		set {someText, AppleScript's text item delimiters} to {itemList as text, tempTID}
+	on error errorMessage number errorNumber -- oops
+		set AppleScript's text item delimiters to tempTID
+		error errorMessage number errorNumber -- pass it on
+	end try
+	
+	return someText
+end replaceText
+
+
